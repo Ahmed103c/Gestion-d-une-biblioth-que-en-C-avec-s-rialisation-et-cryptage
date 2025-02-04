@@ -1,0 +1,11 @@
+# Fichiers et dossiers spécifiques à Visual Studio
+.vs/
+*.user
+*.suo
+
+# Binaires et fichiers compilés
+bin/
+obj/
+
+# Fichiers de log et temporaires
+*.log
