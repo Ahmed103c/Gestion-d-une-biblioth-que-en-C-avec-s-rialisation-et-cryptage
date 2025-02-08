@@ -12,9 +12,9 @@ public class Utilisateur
 
 	public	List<Livre> LivresEmpruntes { get; set; }
 
-	public Utilisateur()
+	public Utilisateur(string Nom)
 	{
-
+		this.Nom = Nom;	
 	}
     public static void main(string[] args)
     {

@@ -7,42 +7,49 @@ using System.IO.Compression;
 using System.Xml.Serialization;
 
 
-Console.WriteLine("Sérialization binaire ");
+//Console.WriteLine("Sérialization binaire ");
 
 
 
 
-// Instanciation et initialisation de l'objet 
-Utilisateur utilisateur1 = new Utilisateur();
+//// Instanciation et initialisation de l'objet 
+//Utilisateur utilisateur1 = new Utilisateur();
 
 
 
-// Sérialisation JSON
-string json = JsonSerializer.Serialize(utilisateur1);
-byte[] jsonBytes = System.Text.Encoding.UTF8.GetBytes(json);
+//// Sérialisation JSON
+//string json = JsonSerializer.Serialize(utilisateur1);
+//byte[] jsonBytes = System.Text.Encoding.UTF8.GetBytes(json);
 
-// Création du flux 
-string chemin = "C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\Serialization_Cryptage";
-chemin = Path.Combine(chemin, "utilisateur1.bjson"); // Ajout du fichier
-using (FileStream fileStream = new FileStream(chemin, FileMode.Create))
-using (GZipStream compressionStream = new GZipStream(fileStream, CompressionMode.Compress))
-{
-    compressionStream.Write(jsonBytes, 0, jsonBytes.Length);
-}
+//// Création du flux 
+//string chemin = "C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\Serialization_Cryptage";
+//chemin = Path.Combine(chemin, "utilisateur1.bjson"); // Ajout du fichier
+//using (FileStream fileStream = new FileStream(chemin, FileMode.Create))
+//using (GZipStream compressionStream = new GZipStream(fileStream, CompressionMode.Compress))
+//{
+//    compressionStream.Write(jsonBytes, 0, jsonBytes.Length);
+//}
 
-Console.WriteLine($"Données sérialisées et compressées dans : {chemin}");
+//Console.WriteLine($"Données sérialisées et compressées dans : {chemin}");
 
-Console.WriteLine("Sérialisation XML");
+//Console.WriteLine("Sérialisation XML");
 
 
-// Création du sérialiseur XML
-XmlSerializer serializer = new XmlSerializer(typeof(Utilisateur));
-chemin = "C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\Serialization_Cryptage";
-chemin = Path.Combine(chemin, "utilisateur1.xml");
+//// Création du sérialiseur XML
+//XmlSerializer serializer = new XmlSerializer(typeof(Utilisateur));
+//chemin = "C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\Serialization_Cryptage";
+//chemin = Path.Combine(chemin, "utilisateur1.xml");
 
-using (FileStream fileStream = new FileStream(chemin, FileMode.Create))
-{
-    serializer.Serialize(fileStream, utilisateur1);
-}
+//using (FileStream fileStream = new FileStream(chemin, FileMode.Create))
+//{
+//    serializer.Serialize(fileStream, utilisateur1);
+//}
 
-Console.WriteLine($"Données sérialisées en XML dans : {chemin}");
+//Console.WriteLine($"Données sérialisées en XML dans : {chemin}");
+//string chemin = "C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\Serialization_Cryptage";
+//Utilisateur u3 = new Utilisateur("ahmed");
+//SerializationFactory.sauvegarder(chemin, TypeSerialization.binaire, u3);
+
+string chemin = "C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\Serialization_Cryptage\\Utilisateur_Ahmed.bjson";
+Utilisateur utilisateur = (Utilisateur)SerializationFactory.charger(chemin, typeof(Utilisateur), TypeSerialization.binaire);
+Console.WriteLine($"Nom : {utilisateur.Nom}");
