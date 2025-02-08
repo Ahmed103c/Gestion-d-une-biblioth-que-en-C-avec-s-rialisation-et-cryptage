@@ -6,7 +6,6 @@ using System.Text.Json;
 using System.IO.Compression;
 using System.Xml.Serialization;
 
-
 string chemin = "C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\Serialization_Cryptage\\Bibliotheque";
 Utilisateur u3 = new Utilisateur("Amine");
 SerializationFactory.sauvegarder(chemin, TypeSerialization.binaire, u3,"1234");
