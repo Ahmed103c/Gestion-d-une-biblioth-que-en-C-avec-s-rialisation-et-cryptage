@@ -101,7 +101,6 @@ int chercherIndexLivre(string titreLivre)
 
 
 List<Utilisateur> Utilisateurs = new List<Utilisateur>();
-
 int chercherIndexUtilisateur(string nomUtilisateur,string prenomUtilisateur)
 {
     int i = 0;
@@ -225,6 +224,56 @@ void deserialiser(string nomUtilisateur,string prenomUtilisateur,TypeSerializati
     }
 }
 
+void modifier(Utilisateur user, TypeSerialization typeSerialization)
+{
+    try
+    {
+        switch (typeSerialization)
+        {
+            case TypeSerialization.binaire:
+                string cheminbjson = $"C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\GestionBibliothequeRzeiguiAhmed\\Bibliotheque\\Utilisateur_{user.Nom}_{user.Prenom}.bjson";
+                if (!File.Exists(cheminbjson))
+                {
+                    throw new FileNotFoundException($"le fichier bjson n'existe pas dans ce chemin : {cheminbjson} ");
+                }
+                SerializationFactory.Modifier(null, cheminbjson, user, typeSerialization);
+                break;
+            case TypeSerialization.XML:
+                Console.WriteLine("CheckPoint1");
+                string chemin1 = $"C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\GestionBibliothequeRzeiguiAhmed\\Bibliotheque\\Utilisateur_{user.Nom}_{user.Prenom}.xml";
+                if (!File.Exists(chemin1))
+                {
+                    throw new FileNotFoundException($"Le fichier XML n'existe pas : {chemin1}");
+                }
+                string chemin2 = $"C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\GestionBibliothequeRzeiguiAhmed\\Bibliotheque\\Utilisateur_{user.Nom}_{user.Prenom}.hash";
+                if (!File.Exists(chemin2))
+                {
+                    throw new FileNotFoundException($"Le fichier hash n'existe pas : {chemin2}");
+                }
+                Console.WriteLine("CheckPoint2");
+                SerializationFactory.Modifier(chemin2,chemin1, user, typeSerialization);
+                break;
+        }
+    }
+    catch (FileNotFoundException ex)
+    {
+        Console.WriteLine($"Erreur : {ex.Message}");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Une erreur inattendue s'est produite : {ex.Message}");
+    }
+
+
+
+
+
+
+
+
+
+
+}
 void deserialiser_update(string nomUtilisateur, string prenomUtilisateur, TypeSerialization typeSerialization)
 {
     try
@@ -239,7 +288,7 @@ void deserialiser_update(string nomUtilisateur, string prenomUtilisateur, TypeSe
                 }
                 Utilisateur utilisateurBjson = (Utilisateur)SerializationFactory.Charger(null, cheminbjson, typeof(Utilisateur), TypeSerialization.binaire);
                 utilisateurBjson=gererUtilisateur(utilisateurBjson);
-                SerializationFactory.sauvegarder(chemin, TypeSerialization.binaire, utilisateurBjson);
+                modifier(utilisateurBjson, typeSerialization);
                 break;
             case TypeSerialization.XML:
                 string chemin1 = $"C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\GestionBibliothequeRzeiguiAhmed\\Bibliotheque\\Utilisateur_{nomUtilisateur}_{prenomUtilisateur}.xml";
@@ -253,7 +302,9 @@ void deserialiser_update(string nomUtilisateur, string prenomUtilisateur, TypeSe
                     throw new FileNotFoundException($"Le fichier hash n'existe pas : {chemin2}");
                 }
                 Utilisateur utilisateurXml = (Utilisateur)SerializationFactory.Charger(chemin2, chemin1, typeof(Utilisateur), TypeSerialization.XML);
-                utilisateurXml.afficherUtilisateur();
+                utilisateurXml =  gererUtilisateur(utilisateurXml);
+                Console.WriteLine("on arrive ici");
+                modifier(utilisateurXml, typeSerialization);
                 break;
         }
     }
@@ -266,14 +317,12 @@ void deserialiser_update(string nomUtilisateur, string prenomUtilisateur, TypeSe
         Console.WriteLine($"Une erreur inattendue s'est produite : {ex.Message}");
     }
 }
-
-
 /***********************************************************************************************************
  * 
  * 
  * 
  * 
- *              Interaction avec Utilisateur 
+ *              Interaction avec Utilisateur  : Boucle Principale de l'application Console 
  * 
  * 
  * 
@@ -302,7 +351,6 @@ while (run)
              * **********************************************************************************/
             afficherLivresBibliothèques();
             break;
-
         case "2":
             /************************************************************************************
              * 
@@ -341,17 +389,16 @@ while (run)
             switch (typeserialistion)
             {
                 case 0:
-                    SerializationFactory.sauvegarder(chemin, TypeSerialization.binaire, newUtilisateur);
+                    SerializationFactory.sauvegarder(chemin, TypeSerialization.binaire, newUtilisateur, mdp);
                     break;
                 case 1:
-                    SerializationFactory.sauvegarder(chemin, TypeSerialization.XML, newUtilisateur);
+                    SerializationFactory.sauvegarder(chemin, TypeSerialization.XML, newUtilisateur, mdp);
                     break;
                 default:
                     Console.WriteLine("typeSerialisation incorrect");
                     break;
             }
             break;
-
         case "3":
             /************************************************************************************
              * 
@@ -410,7 +457,6 @@ while (run)
                     break;
             }
             break;
-
         case "5":
             /************************************************************************************
              * 
@@ -422,8 +468,6 @@ while (run)
             Console.WriteLine("Toute l'équipe vous exprime sa gratitude pour l'utilisation de notre bibliothèque");
             run = false;
             break;
-
-
         default:
             break;
     }

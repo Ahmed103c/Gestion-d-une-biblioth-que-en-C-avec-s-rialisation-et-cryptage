@@ -18,10 +18,9 @@ public enum TypeSerialization
 
 public class SerializationFactory
 {
-    public static void sauvegarder(string chemin, TypeSerialization typeserialization, object obj )
+    public static void sauvegarder(string chemin, TypeSerialization typeserialization, object obj, string motDePasse)
     {
-        Console.WriteLine("Entrer un mdp de sauvegarde pour l'utilisateur : ");
-        string motDePasse = Console.ReadLine();
+
         if (typeserialization == TypeSerialization.binaire)
         {
             string json = JsonSerializer.Serialize(obj);
@@ -68,6 +67,7 @@ public class SerializationFactory
             Console.WriteLine($"Mot de passe hashé et sauvegardé dans : {hashFilePath}");
         }
     }
+
     public static object Charger(string chemin2, string chemin, Type typeObjet, TypeSerialization typeserialization)
     {
         if (typeserialization == TypeSerialization.binaire)
@@ -97,7 +97,7 @@ public class SerializationFactory
 
                     if (hashMdp == hashFichier)
                     {
-                       
+
                         decompressionStream.CopyTo(memoryStream);
                         byte[] decompressedBytes = memoryStream.ToArray();
                         string json = System.Text.Encoding.UTF8.GetString(decompressedBytes);
@@ -188,4 +188,147 @@ public class SerializationFactory
             throw new InvalidOperationException("Impossible de charger le fichier. Vérifiez le mot de passe.");
         }
     }
+
+    public static void Modifier(string chemin2, string chemin, object obj, TypeSerialization typeserialization)
+    {
+        if (typeserialization == TypeSerialization.binaire)
+        {
+            if (typeserialization == TypeSerialization.binaire)
+            {
+                if (!File.Exists(chemin))
+                {
+                    throw new FileNotFoundException($"Fichier introuvable : {chemin}");
+                }
+
+                bool a = false;
+                int tentatives = 3;
+                string mdp = "";
+
+                while (tentatives > 0)
+                {
+                    Console.WriteLine("Entrer Mot de passe");
+                    mdp = Console.ReadLine();
+                    string hashMdp = Convert.ToBase64String(System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes(mdp)));
+
+                    // Ouvrir le fichier en mode lecture et décompression
+                    using (FileStream fileStream = new FileStream(chemin, FileMode.Open, FileAccess.ReadWrite, FileShare.None)) // Empêche l'accès concurrent
+                    using (GZipStream decompressionStream = new GZipStream(fileStream, CompressionMode.Decompress))
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        // Lire le hash du fichier
+                        byte[] hashBytes = new byte[44]; // Taille d'un hash SHA256 encodé en Base64
+                        decompressionStream.Read(hashBytes, 0, hashBytes.Length);
+                        string hashFichier = Encoding.UTF8.GetString(hashBytes);
+
+                        if (hashMdp == hashFichier)
+                        {
+                            Console.WriteLine("Mdp Correct");
+                            a = true;
+                            break;
+                        }
+                        else
+                        {
+                            tentatives--;
+                            Console.WriteLine($"Mot de passe incorrect. Il vous reste {tentatives} tentatives.");
+                        }
+                    }
+
+                    if (tentatives == 0)
+                    {
+                        Console.WriteLine("3 tentatives échouées. Le fichier sera supprimé pour garantir la sécurité.");
+                        File.Delete(chemin);
+                        throw new UnauthorizedAccessException("Accès refusé. Fichier supprimé.");
+                    }
+                }
+                if (a)
+                {
+                    try
+                    {
+                        string cheminx = "C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\GestionBibliothequeRzeiguiAhmed\\Bibliotheque";
+                        File.Delete(chemin);
+                        Console.WriteLine("Fichier existant supprimé.");
+                        sauvegarder(cheminx, typeserialization, obj, mdp);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Erreur lors de la suppression du fichier : {ex.Message}");
+                        return;
+                    }
+                }
+
+
+            }
+        }
+        else
+        {
+            Console.WriteLine("Hiiiiii");
+            if (!File.Exists(chemin))
+            {
+                throw new FileNotFoundException($"Fichier introuvable : {chemin}");
+            }
+            // Vérifiez si un fichier de hash existe
+            string cheminHash = chemin2;
+            if (!File.Exists(cheminHash))
+            {
+                throw new FileNotFoundException($"Fichier de hash introuvable : {cheminHash}");
+            }
+
+            // Lire le hash depuis le fichier
+            string hashFichier;
+            using (StreamReader reader = new StreamReader(cheminHash))
+            {
+                hashFichier = reader.ReadLine();
+            }
+
+            if (string.IsNullOrEmpty(hashFichier))
+            {
+                throw new InvalidOperationException("Fichier de hash corrompu ou vide.");
+            }
+            string mdp = "";
+            bool a = false;
+            // Demander le mot de passe et vérifier le hash
+            int tentatives = 3;
+            while (tentatives > 0)
+            {
+                Console.WriteLine("Entrer le mot de passe :");
+                mdp = Console.ReadLine();
+
+                // Générer le hash du mot de passe entré
+                string hashMdp = Convert.ToBase64String(System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes(mdp)));
+
+                // Comparer le hash calculé avec celui du fichier
+                if (hashMdp == hashFichier)
+                {
+                    Console.WriteLine("MDP xml Correct !!");
+                    a = true;
+                    break;
+                }
+                else
+                {
+                    tentatives--;
+                    Console.WriteLine($"Mot de passe incorrect. Il vous reste {tentatives} tentative(s).");
+                }
+            }
+            if (a)
+            {
+                try
+                {
+                    string cheminx = "C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\GestionBibliothequeRzeiguiAhmed\\Bibliotheque";
+                    File.Delete(chemin);
+                    Console.WriteLine("Fichier existant supprimé.");
+                    sauvegarder(cheminx, typeserialization, obj, mdp);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erreur lors de la suppression du fichier : {ex.Message}");
+                    return;
+                }
+            }
+
+
+
+        }
+    }
+
 }
+
