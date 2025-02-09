@@ -111,6 +111,63 @@ int chercherIndexUtilisateur(string nomUtilisateur,string prenomUtilisateur)
     }
     return i;
 }
+void rendreLivre(string nomLivre,Utilisateur utilisateur_courant)
+{
+    List<Livre> livresUtilisateur_courant = utilisateur_courant.LivresEmpruntes;
+    int index = livresUtilisateur_courant.FindIndex(livre => livre.Titre == nomLivre);
+    if (index == -1)
+    {
+
+        Console.WriteLine($"Erreur : Le livre '{nomLivre}' n'existe pas dans la liste des livres empruntés.");
+        return;
+    }
+    livresUtilisateur_courant.RemoveAt(index);
+    Console.WriteLine($"Le livre '{nomLivre}' a été rendu avec succès.");
+}
+void emprunterLivre(string nomLivre, Utilisateur utilisateur_courant)
+{
+    Livre livreAEmprunter = livres.FirstOrDefault(livre => livre.Titre == nomLivre);
+    if (livreAEmprunter == null)
+    {
+        Console.WriteLine($"Erreur : Le livre '{nomLivre}' n'existe pas dans la bibliothèque.");
+        return;
+    }
+
+    // Ajouter le livre à la liste des livres empruntés par l'utilisateur
+    utilisateur_courant.LivresEmpruntes.Add(livreAEmprunter);
+
+    Console.WriteLine($"Le livre '{nomLivre}' a été emprunté avec succès par {utilisateur_courant.Nom} {utilisateur_courant.Prenom}.");
+}
+Utilisateur gererUtilisateur(Utilisateur utilisateurUpdate)
+{
+
+    bool run2=true;
+    while (run2)
+    {
+        Console.WriteLine("pour rendre    un Livre ----> taper 6 \n" +
+                  "pour emprunter un Livre ----> taper 7 \n" +
+                  "pour terminer           ----> taper 8 \n");
+        int choixUtilisateur = int.Parse(Console.ReadLine());
+        switch (choixUtilisateur)
+        {
+            case 6:
+                Console.WriteLine("Donner le nom du Livre a rendre :");
+                string nomLivre=Console.ReadLine();
+                rendreLivre(nomLivre, utilisateurUpdate);
+                break;
+            case 7:
+                Console.WriteLine("Donner le nom du Livre a emprunter");
+                string nomLivre2 = Console.ReadLine();
+                emprunterLivre(nomLivre2,utilisateurUpdate);
+                break;
+            case 8:
+                run2 = false;
+                break;
+        }
+    }
+    return utilisateurUpdate;
+}
+
 
 /***********************************************************************************************************
  * 
@@ -126,12 +183,7 @@ int chercherIndexUtilisateur(string nomUtilisateur,string prenomUtilisateur)
  * 
  * **********************************************************************************************************/
 
-
-
-
-
 string chemin = "C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\GestionBibliothequeRzeiguiAhmed\\Bibliotheque";
-
 void deserialiser(string nomUtilisateur,string prenomUtilisateur,TypeSerialization typeSerialization)
 {
     try
@@ -173,6 +225,47 @@ void deserialiser(string nomUtilisateur,string prenomUtilisateur,TypeSerializati
     }
 }
 
+void deserialiser_update(string nomUtilisateur, string prenomUtilisateur, TypeSerialization typeSerialization)
+{
+    try
+    {
+        switch (typeSerialization)
+        {
+            case TypeSerialization.binaire:
+                string cheminbjson = $"C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\GestionBibliothequeRzeiguiAhmed\\Bibliotheque\\Utilisateur_{nomUtilisateur}_{prenomUtilisateur}.bjson";
+                if (!File.Exists(cheminbjson))
+                {
+                    throw new FileNotFoundException($"le fichier bjson n'existe pas dans ce chemin : {cheminbjson} ");
+                }
+                Utilisateur utilisateurBjson = (Utilisateur)SerializationFactory.Charger(null, cheminbjson, typeof(Utilisateur), TypeSerialization.binaire);
+                utilisateurBjson=gererUtilisateur(utilisateurBjson);
+                SerializationFactory.sauvegarder(chemin, TypeSerialization.binaire, utilisateurBjson);
+                break;
+            case TypeSerialization.XML:
+                string chemin1 = $"C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\GestionBibliothequeRzeiguiAhmed\\Bibliotheque\\Utilisateur_{nomUtilisateur}_{prenomUtilisateur}.xml";
+                if (!File.Exists(chemin1))
+                {
+                    throw new FileNotFoundException($"Le fichier XML n'existe pas : {chemin1}");
+                }
+                string chemin2 = $"C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\GestionBibliothequeRzeiguiAhmed\\Bibliotheque\\Utilisateur_{nomUtilisateur}_{prenomUtilisateur}.hash";
+                if (!File.Exists(chemin2))
+                {
+                    throw new FileNotFoundException($"Le fichier hash n'existe pas : {chemin2}");
+                }
+                Utilisateur utilisateurXml = (Utilisateur)SerializationFactory.Charger(chemin2, chemin1, typeof(Utilisateur), TypeSerialization.XML);
+                utilisateurXml.afficherUtilisateur();
+                break;
+        }
+    }
+    catch (FileNotFoundException ex)
+    {
+        Console.WriteLine($"Erreur : {ex.Message}");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Une erreur inattendue s'est produite : {ex.Message}");
+    }
+}
 
 
 /***********************************************************************************************************
@@ -188,16 +281,11 @@ void deserialiser(string nomUtilisateur,string prenomUtilisateur,TypeSerializati
  * 
  * 
  * **********************************************************************************************************/
-
-
-
-
-
-Console.WriteLine("Pour affichier la liste des livres taper 1 \n" +
-                  "Pour créer un nouveau Utilisateur  taper 2 \n" +
-                  "Pour affiher les donnees d'un Utilisateur taper 3 \n"+
-                  "Pour affiher tous les Utilisateurs taper 5 \n" +
-                  "Pour arreter l'application taper 4 \n");
+Console.WriteLine("Pour affichier la liste des livres     ------------   : taper 1\n"+
+                  "Pour créer un nouveau Utilisateur      ------------   : taper 2\n"+
+                  "Pour affiher les donnees d'un Utilisateur  --------   : taper 3\n"+
+                  "Pour rendre/emprunter des livres pour un Utilisateur  : taper 4\n"+
+                  "Pour arreter l'application  -----------------------   : taper 5\n");
 bool run = true;
 while (run)
 {
@@ -253,10 +341,10 @@ while (run)
             switch (typeserialistion)
             {
                 case 0:
-                    SerializationFactory.sauvegarder(chemin, TypeSerialization.binaire, newUtilisateur, mdp);
+                    SerializationFactory.sauvegarder(chemin, TypeSerialization.binaire, newUtilisateur);
                     break;
                 case 1:
-                    SerializationFactory.sauvegarder(chemin, TypeSerialization.XML, newUtilisateur, mdp);
+                    SerializationFactory.sauvegarder(chemin, TypeSerialization.XML, newUtilisateur);
                     break;
                 default:
                     Console.WriteLine("typeSerialisation incorrect");
@@ -293,25 +381,49 @@ while (run)
                     break;
             }
             break;
-
         case "4":
+            /************************************************************************************
+             * 
+             * 
+             *                              Updating User 
+             * 
+             * 
+             * **********************************************************************************/
+            Console.WriteLine("Modification Utilisateur : Choisisser type d'acces de l'utilisateur : \n" +
+                                         "0 --- Pour ---- Serialisation Binaire (.bjoson) \n" +
+                                         "1 --- Pour ---- Serialisation XML (.xml) \n");
+            int typeserialistion3 = int.Parse(Console.ReadLine());
+            Console.WriteLine("Donner nom utilisateur");
+            string nom_des2 = Console.ReadLine();
+            Console.WriteLine("Donner prenom utilisateur");
+            string preonm_des2 = Console.ReadLine();
+            switch (typeserialistion3)
+            {
+                case 0:
+                    deserialiser_update(nom_des2, preonm_des2, TypeSerialization.binaire);
+                    break;
+                case 1:
+                    deserialiser_update(nom_des2, preonm_des2, TypeSerialization.XML);
+                    break;
+                default:
+                    Console.WriteLine("typeSerialisation incorrect");
+                    break;
+            }
+            break;
+
+        case "5":
+            /************************************************************************************
+             * 
+             * 
+             *                              Quitter l'application 
+             * 
+             * 
+             * **********************************************************************************/
             Console.WriteLine("Toute l'équipe vous exprime sa gratitude pour l'utilisation de notre bibliothèque");
             run = false;
             break;
 
-        case "5":
-            if (Utilisateurs.Count != 0)
-            {
-                foreach (var user in Utilisateurs)
-                {
-                    user.afficherUtilisateur();
-                }
-            }
-            else
-            {
-                Console.WriteLine("Aucun Utilisateur est connecté");
-            }
-            break;
+
         default:
             break;
     }

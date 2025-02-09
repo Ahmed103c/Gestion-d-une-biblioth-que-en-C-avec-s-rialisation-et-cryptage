@@ -18,8 +18,10 @@ public enum TypeSerialization
 
 public class SerializationFactory
 {
-    public static void sauvegarder(string chemin, TypeSerialization typeserialization, object obj, string motDePasse)
+    public static void sauvegarder(string chemin, TypeSerialization typeserialization, object obj )
     {
+        Console.WriteLine("Entrer un mdp de sauvegarde pour l'utilisateur : ");
+        string motDePasse = Console.ReadLine();
         if (typeserialization == TypeSerialization.binaire)
         {
             string json = JsonSerializer.Serialize(obj);
@@ -95,6 +97,7 @@ public class SerializationFactory
 
                     if (hashMdp == hashFichier)
                     {
+                       
                         decompressionStream.CopyTo(memoryStream);
                         byte[] decompressedBytes = memoryStream.ToArray();
                         string json = System.Text.Encoding.UTF8.GetString(decompressedBytes);
