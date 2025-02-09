@@ -15,6 +15,7 @@ public enum TypeSerialization
 	XML 
 }
 
+
 public class SerializationFactory
 {
     public static void sauvegarder(string chemin, TypeSerialization typeserialization, object obj, string motDePasse)
@@ -43,17 +44,29 @@ public class SerializationFactory
         else
         {
             XmlSerializer serializer = new XmlSerializer(obj.GetType());
+            string chemin1 = Path.Combine(chemin, $"{obj.GetType().Name}_{obj.GetType().GetProperty("Nom").GetValue(obj)?.ToString()}.xml");
 
-            chemin = Path.Combine(chemin, $"{obj.GetType().Name}.xml");
-            using (FileStream fileStream = new FileStream(chemin, FileMode.Create))
+            using (FileStream fileStream = new FileStream(chemin1, FileMode.Create))
             {
                 serializer.Serialize(fileStream, obj);
             }
 
-            Console.WriteLine($"Données sérialisées en XML dans : {chemin}");
+
+            Console.WriteLine($"Données sérialisées en XML dans : {chemin1}");
+
+            Console.WriteLine("Entrer un mot de passe pour protéger ce fichier XML :");
+
+            // Générer un hash du mot de passe
+            string passwordHash = Convert.ToBase64String(System.Security.Cryptography.SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(motDePasse)));
+
+            // Sauvegarder le hash dans un fichier associé
+            string hashFilePath = Path.Combine(chemin, $"{obj.GetType().Name}_{obj.GetType().GetProperty("Nom").GetValue(obj)?.ToString()}.hash"); ;
+            File.WriteAllText(hashFilePath, passwordHash);
+
+            Console.WriteLine($"Mot de passe hashé et sauvegardé dans : {hashFilePath}");
         }
     }
-    public static object Charger(string chemin, Type typeObjet, TypeSerialization typeserialization)
+    public static object Charger(string chemin2, string chemin, Type typeObjet, TypeSerialization typeserialization)
     {
         if (typeserialization == TypeSerialization.binaire)
         {
@@ -112,15 +125,64 @@ public class SerializationFactory
             {
                 throw new FileNotFoundException($"Fichier introuvable : {chemin}");
             }
-
-            XmlSerializer serializer = new XmlSerializer(typeObjet);
-
-            using (FileStream fileStream = new FileStream(chemin, FileMode.Open))
+            // Vérifiez si un fichier de hash existe
+            string cheminHash = chemin2;
+            if (!File.Exists(cheminHash))
             {
-                object obj = serializer.Deserialize(fileStream);
-                Console.WriteLine($"Données désérialisées depuis : {chemin}");
-                return obj;
+                throw new FileNotFoundException($"Fichier de hash introuvable : {cheminHash}");
             }
+
+            // Lire le hash depuis le fichier
+            string hashFichier;
+            using (StreamReader reader = new StreamReader(cheminHash))
+            {
+                hashFichier = reader.ReadLine();
+            }
+
+            if (string.IsNullOrEmpty(hashFichier))
+            {
+                throw new InvalidOperationException("Fichier de hash corrompu ou vide.");
+            }
+
+            // Demander le mot de passe et vérifier le hash
+            int tentatives = 3;
+            while (tentatives > 0)
+            {
+                Console.WriteLine("Entrer le mot de passe :");
+                string mdp = Console.ReadLine();
+
+                // Générer le hash du mot de passe entré
+                string hashMdp = Convert.ToBase64String(System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes(mdp)));
+
+                // Comparer le hash calculé avec celui du fichier
+                if (hashMdp == hashFichier)
+                {
+                    // Si le mot de passe est correct, désérialiser le fichier XML
+                    XmlSerializer serializer = new XmlSerializer(typeObjet);
+                    using (FileStream fileStream = new FileStream(chemin, FileMode.Open))
+                    {
+                        object obj = serializer.Deserialize(fileStream);
+                        Console.WriteLine($"Données désérialisées depuis : {chemin}");
+                        return obj;
+                    }
+                }
+                else
+                {
+                    tentatives--;
+                    Console.WriteLine($"Mot de passe incorrect. Il vous reste {tentatives} tentative(s).");
+                }
+            }
+
+            // Si les tentatives sont épuisées, supprimer le fichier pour des raisons de sécurité
+            if (tentatives == 0)
+            {
+                Console.WriteLine("3 tentatives échouées. Le fichier sera supprimé pour garantir la sécurité.");
+                File.Delete(chemin);
+                File.Delete(cheminHash); // Supprime également le fichier de hash
+                throw new UnauthorizedAccessException("Accès refusé. Fichier supprimé.");
+            }
+
+            throw new InvalidOperationException("Impossible de charger le fichier. Vérifiez le mot de passe.");
         }
     }
 }

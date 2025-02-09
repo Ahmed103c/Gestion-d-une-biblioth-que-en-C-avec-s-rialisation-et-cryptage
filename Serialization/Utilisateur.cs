@@ -11,8 +11,8 @@ public class Utilisateur
 	public DateFormat DateInscription { get; set; }
 
 	public	List<Livre> LivresEmpruntes { get; set; }
-
-	public Utilisateur(string Nom)
+    public Utilisateur() { }
+    public Utilisateur(string Nom)
 	{
 		this.Nom = Nom;	
 	}

@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cryptage", "..\Cryptage\Cry
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serialization", "..\Serialization\Serialization.csproj", "{2432BD71-CBB7-42DE-AE56-A0C416F6874B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterfaceGraphique", "..\InterfaceGraphique\InterfaceGraphique.csproj", "{2F7FDB76-BFEF-42B5-B63E-961D8E1F0190}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{2432BD71-CBB7-42DE-AE56-A0C416F6874B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2432BD71-CBB7-42DE-AE56-A0C416F6874B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2432BD71-CBB7-42DE-AE56-A0C416F6874B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F7FDB76-BFEF-42B5-B63E-961D8E1F0190}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F7FDB76-BFEF-42B5-B63E-961D8E1F0190}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F7FDB76-BFEF-42B5-B63E-961D8E1F0190}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F7FDB76-BFEF-42B5-B63E-961D8E1F0190}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -71,61 +71,6 @@ public class CryptageFactory
             Console.WriteLine($"Données sérialisées en XML dans : {chemin}");
         }
     }
-
-    // Méthode pour charger des fichiers avec déchiffrement
-    //public static object Charger(string chemin, Type typeObjet, TypeSerialization typeSerialization)
-    //{
-    //    string key;
-    //    Console.WriteLine("Entrer la clé pour décryptage  à 16 chiffre_et/ou_lettres");
-    //    key = Console.ReadLine();
-    //    byte[] decryptionKey = GenerateKey(key);
-
-    //    if (typeSerialization == TypeSerialization.binaire)
-    //    {
-    //        if (!File.Exists(chemin))
-    //        {
-    //            throw new FileNotFoundException($"Fichier introuvable : {chemin}");
-    //        }
-
-    //        using (FileStream fileStream = new FileStream(chemin, FileMode.Open))
-    //        using (Aes aes = Aes.Create())
-    //        {
-    //            byte[] iv = new byte[16];
-    //            fileStream.Read(iv, 0, iv.Length); // Lire l'IV depuis le fichier
-    //            aes.Key = decryptionKey;
-    //            aes.IV = iv;
-
-    //            using (CryptoStream cryptoStream = new CryptoStream(fileStream, aes.CreateDecryptor(), CryptoStreamMode.Read))
-    //            using (MemoryStream memoryStream = new MemoryStream())
-    //            {
-    //                cryptoStream.CopyTo(memoryStream);
-    //                byte[] decryptedBytes = memoryStream.ToArray();
-    //                string json = Encoding.UTF8.GetString(decryptedBytes);
-    //                object obj = JsonSerializer.Deserialize(json, typeObjet);
-
-    //                Console.WriteLine($"Données déchiffrées et chargées depuis : {chemin}");
-    //                return obj;
-    //            }
-    //        }
-    //    }
-    //    else
-    //    {
-    //        if (!File.Exists(chemin))
-    //        {
-    //            throw new FileNotFoundException($"Fichier introuvable : {chemin}");
-    //        }
-
-    //        XmlSerializer serializer = new XmlSerializer(typeObjet);
-
-    //        using (FileStream fileStream = new FileStream(chemin, FileMode.Open))
-    //        {
-    //            object obj = serializer.Deserialize(fileStream);
-    //            Console.WriteLine($"Données désérialisées depuis : {chemin}");
-    //            return obj;
-    //        }
-    //    }
-    //}
-
     public static object Charger(string chemin, Type typeObjet, TypeSerialization typeSerialization)
     {
         if (!File.Exists(chemin))
