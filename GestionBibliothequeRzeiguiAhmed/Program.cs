@@ -2,42 +2,27 @@
 using System.Globalization;
 
 Console.WriteLine("Bienvenue sur la bibliothèque Enligne");
-//Utilisateur u1 = new Utilisateur
-//{
-//    Nom = "Ahmed",
-//    Prenom = "Rzeigui",
-//    Email = "ahmedRzeigui@gmail.com",
-//    DateInscription = DateTime.ParseExact("10/02/2025", "dd/MM/yyyy", CultureInfo.InvariantCulture)
-//};
 
-//// Affichage des informations
-//Console.WriteLine($"Nom : {u1.Nom}");
-//Console.WriteLine($"Prénom : {u1.Prenom}");
-//Console.WriteLine($"Email : {u1.Email}");
-//Console.WriteLine($"Date d'inscription : {u1.DateInscription:dd/MM/yyyy}");
-
-string cheminFichier = "C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\GestionBibliothequeRzeiguiAhmed\\Livres.csv";
-
-//if (File.Exists(cheminFichier))
-//{
-//    Console.WriteLine("Le fichier existe !");
-//    Console.WriteLine("Contenu du fichier :");
-//    Console.WriteLine(File.ReadAllText(cheminFichier));
-//}
-//else
-//{
-//    Console.WriteLine("Fichier introuvable !");
-//}
-
-// Liste qui contiendra tous les livres
+/***********************************************************************************************************
+ * 
+ * 
+ * 
+ * 
+ *              Gestion des livres de la bibliothèques
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * **********************************************************************************************************/
+string cheminFichierCSV = "C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\GestionBibliothequeRzeiguiAhmed\\Livres.csv";
+// livres de la bibliothèques :
 List<Livre> livres = new List<Livre>();
-
-
-
-// Lecture ligne par ligne
+// charger les livres par fichier.csv
 try
 {
-    using (StreamReader reader = new StreamReader(cheminFichier))
+    using (StreamReader reader = new StreamReader(cheminFichierCSV))
     {
         string ligne;
         bool isHeader = true; // Pour ignorer la première ligne (en-têtes)
@@ -48,10 +33,9 @@ try
             if (isHeader)
             {
                 isHeader = false;
-                continue; // Ignorer l'en-tête
+                continue; 
             }
 
-            // Séparer les colonnes
             string[] colonnes = ligne.Split(';');
 
             if (colonnes.Length != 6)
@@ -60,7 +44,6 @@ try
                 continue;
             }
 
-            // Extraction des champs
             string titre = colonnes[0];
             string auteur = colonnes[1];
             DateTime dateDePublication = DateTime.ParseExact(colonnes[2], "dd/MM/yyyy", CultureInfo.InvariantCulture);
@@ -68,10 +51,8 @@ try
             string categorieNom = colonnes[4];
             DateTime dateAjout = DateTime.ParseExact(colonnes[5], "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
-            // Création de l'objet `Categorie`
             Categorie categorie = new Categorie { Nom = categorieNom };
 
-            // Création de l'objet `Livre`
             Livre livre = new Livre
             {
                 Titre = titre,
@@ -81,20 +62,128 @@ try
                 Categorie = categorie,
                 DateAjout = dateAjout
             };
-
-            // Ajout du livre à la liste
             livres.Add(livre);
         }
-    }
-
-    // Affichage des livres pour vérification
-    foreach (var livre in livres)
-    {
-        Console.WriteLine($"Titre: {livre.Titre}, Auteur: {livre.Auteur}, ISBN: {livre.ISBN}, Categorie: {livre.Categorie.Nom}, Date d'ajout: {livre.DateAjout:dd/MM/yyyy}");
     }
 }
 catch (Exception ex)
 {
     Console.WriteLine($"Erreur : {ex.Message}");
 }
-    
+void afficherLivresBibliothèques() {
+    foreach (var livre in livres)
+    {
+        Console.WriteLine($"Titre: {livre.Titre}, Auteur: {livre.Auteur}, ISBN: {livre.ISBN}, Categorie: {livre.Categorie.Nom}, Date d'ajout: {livre.DateAjout:dd/MM/yyyy}");
+    }
+}
+int chercherIndexLivre(string titreLivre)
+{
+    int i = 0;
+    while (livres[i].Titre!=titreLivre)
+    {
+        i++;
+    }
+    return i;
+}
+/***********************************************************************************************************
+ * 
+ * 
+ * 
+ * 
+ *               Utilisateur 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * **********************************************************************************************************/
+
+
+List<Utilisateur> Utilisateurs = new List<Utilisateur>();
+
+int chercherIndexUtilisateur(string nomUtilisateur,string prenomUtilisateur)
+{
+    int i = 0;
+    while ((Utilisateurs[i].Nom != nomUtilisateur) && (Utilisateurs[i].Prenom!=prenomUtilisateur))
+    {
+        i++;
+    }
+    return i;
+}
+/***********************************************************************************************************
+ * 
+ * 
+ * 
+ * 
+ *              Interaction avec Utilisateur 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * **********************************************************************************************************/
+
+
+
+
+
+Console.WriteLine("Pour affichier la liste des livres taper 1 \n" +
+                  "Pour créer un nouveau Utilisateur  taper 2 \n" +
+                  "Pour affiher les donnees d'un Utilisateur taper 3 \n"+
+                  "Pour affiher tous les Utilisateurs taper 5 \n" +
+                  "Pour arreter l'application taper 4 \n");
+bool run = true;
+while (run)
+{
+    string demandeUser = Console.ReadLine();
+    switch (demandeUser)
+    {
+        case "1":
+            afficherLivresBibliothèques();
+            break;
+        case "2":
+            Console.WriteLine("Insciption d'un Nouveau Utilisateur :) \n");
+            Console.WriteLine("Entrer le nom de l'utilisateur : ");
+            string nom = Console.ReadLine();
+            Console.WriteLine("Entrer le prenom de l'utilisateur : \n");
+            string prenom = Console.ReadLine();
+            Console.WriteLine("Entrer l'email de l'utilisateur : \n");
+            string email = Console.ReadLine();
+            Console.WriteLine("Entrer dateInscri de l'utilisateur : \n");
+            DateTime dateinscription = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            Console.WriteLine("Entrer le nom du livre a emprunté shouaité \n");
+            string nomLivre = Console.ReadLine();
+            Utilisateur newUtilisateur = new Utilisateur(nom, prenom, email, dateinscription, livres[chercherIndexLivre(nomLivre)]);
+            Utilisateurs.Add(newUtilisateur);
+            break;
+        case "3":
+            Console.WriteLine("Donner nom de l'utilisateur");
+            string nom_input = Console.ReadLine();
+            Console.WriteLine("Donner prenom de l'utilisateur");
+            string prenom_input = Console.ReadLine();
+            Utilisateurs[chercherIndexUtilisateur(nom_input, prenom_input)].afficherUtilisateur();
+            break;
+        case "4":
+            run = false;
+            break;
+        case "5":
+            if (Utilisateurs.Count != 0)
+            {
+                foreach (var utilisateur in Utilisateurs)
+                {
+                    utilisateur.afficherUtilisateur();
+                }
+            }
+            else
+            {
+                Console.WriteLine("Aucun Utilisateur est connecté");
+            }
+            break;
+        default:
+            break;
+    }
+
+}
+
