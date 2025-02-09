@@ -1,7 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System.Globalization;
 
-Console.WriteLine("Bienvenue sur la bibliothèque Enligne");
+Console.WriteLine($"{ Couleur.CYN}                             --------Bienvenue sur la bibliothèque Enligne----------  \n      {Couleur.NOR}");
 
 /***********************************************************************************************************
  * 
@@ -144,8 +144,8 @@ Utilisateur gererUtilisateur(Utilisateur utilisateurUpdate)
     while (run2)
     {
         Console.WriteLine("pour rendre    un Livre ----> taper 6 \n" +
-                  "pour emprunter un Livre ----> taper 7 \n" +
-                  "pour terminer           ----> taper 8 \n");
+                          "pour emprunter un Livre ----> taper 7 \n" +
+                          "pour terminer           ----> taper 8 \n");
         int choixUtilisateur = int.Parse(Console.ReadLine());
         switch (choixUtilisateur)
         {
@@ -224,7 +224,7 @@ void deserialiser(string nomUtilisateur,string prenomUtilisateur,TypeSerializati
     }
 }
 
-void modifier(Utilisateur user, TypeSerialization typeSerialization)
+void modifier_externe(Utilisateur user, TypeSerialization typeSerialization)
 {
     try
     {
@@ -251,7 +251,7 @@ void modifier(Utilisateur user, TypeSerialization typeSerialization)
                     throw new FileNotFoundException($"Le fichier hash n'existe pas : {chemin2}");
                 }
                 Console.WriteLine("CheckPoint2");
-                SerializationFactory.Modifier(chemin2,chemin1, user, typeSerialization);
+                SerializationFactory.Modifier(chemin2, chemin1, user, typeSerialization);
                 break;
         }
     }
@@ -263,214 +263,203 @@ void modifier(Utilisateur user, TypeSerialization typeSerialization)
     {
         Console.WriteLine($"Une erreur inattendue s'est produite : {ex.Message}");
     }
-
-
-
-
-
-
-
-
-
-
 }
-void deserialiser_update(string nomUtilisateur, string prenomUtilisateur, TypeSerialization typeSerialization)
-{
-    try
+    void Update(string nomUtilisateur, string prenomUtilisateur, TypeSerialization typeSerialization)
     {
-        switch (typeSerialization)
+        try
         {
-            case TypeSerialization.binaire:
-                string cheminbjson = $"C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\GestionBibliothequeRzeiguiAhmed\\Bibliotheque\\Utilisateur_{nomUtilisateur}_{prenomUtilisateur}.bjson";
-                if (!File.Exists(cheminbjson))
-                {
-                    throw new FileNotFoundException($"le fichier bjson n'existe pas dans ce chemin : {cheminbjson} ");
-                }
-                Utilisateur utilisateurBjson = (Utilisateur)SerializationFactory.Charger(null, cheminbjson, typeof(Utilisateur), TypeSerialization.binaire);
-                utilisateurBjson=gererUtilisateur(utilisateurBjson);
-                modifier(utilisateurBjson, typeSerialization);
-                break;
-            case TypeSerialization.XML:
-                string chemin1 = $"C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\GestionBibliothequeRzeiguiAhmed\\Bibliotheque\\Utilisateur_{nomUtilisateur}_{prenomUtilisateur}.xml";
-                if (!File.Exists(chemin1))
-                {
-                    throw new FileNotFoundException($"Le fichier XML n'existe pas : {chemin1}");
-                }
-                string chemin2 = $"C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\GestionBibliothequeRzeiguiAhmed\\Bibliotheque\\Utilisateur_{nomUtilisateur}_{prenomUtilisateur}.hash";
-                if (!File.Exists(chemin2))
-                {
-                    throw new FileNotFoundException($"Le fichier hash n'existe pas : {chemin2}");
-                }
-                Utilisateur utilisateurXml = (Utilisateur)SerializationFactory.Charger(chemin2, chemin1, typeof(Utilisateur), TypeSerialization.XML);
-                utilisateurXml =  gererUtilisateur(utilisateurXml);
-                Console.WriteLine("on arrive ici");
-                modifier(utilisateurXml, typeSerialization);
-                break;
+            switch (typeSerialization)
+            {
+                case TypeSerialization.binaire:
+                    string cheminbjson = $"C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\GestionBibliothequeRzeiguiAhmed\\Bibliotheque\\Utilisateur_{nomUtilisateur}_{prenomUtilisateur}.bjson";
+                    if (!File.Exists(cheminbjson))
+                    {
+                        throw new FileNotFoundException($"le fichier bjson n'existe pas dans ce chemin : {cheminbjson} ");
+                    }
+                    Utilisateur utilisateurBjson = (Utilisateur)SerializationFactory.Charger(null, cheminbjson, typeof(Utilisateur), TypeSerialization.binaire);
+                    utilisateurBjson = gererUtilisateur(utilisateurBjson);
+                    modifier_externe(utilisateurBjson, typeSerialization);
+                    break;
+                case TypeSerialization.XML:
+                    string chemin1 = $"C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\GestionBibliothequeRzeiguiAhmed\\Bibliotheque\\Utilisateur_{nomUtilisateur}_{prenomUtilisateur}.xml";
+                    if (!File.Exists(chemin1))
+                    {
+                        throw new FileNotFoundException($"Le fichier XML n'existe pas : {chemin1}");
+                    }
+                    string chemin2 = $"C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\GestionBibliothequeRzeiguiAhmed\\Bibliotheque\\Utilisateur_{nomUtilisateur}_{prenomUtilisateur}.hash";
+                    if (!File.Exists(chemin2))
+                    {
+                        throw new FileNotFoundException($"Le fichier hash n'existe pas : {chemin2}");
+                    }
+                    Utilisateur utilisateurXml = (Utilisateur)SerializationFactory.Charger(chemin2, chemin1, typeof(Utilisateur), TypeSerialization.XML);
+                    utilisateurXml = gererUtilisateur(utilisateurXml);
+                    modifier_externe(utilisateurXml, typeSerialization);
+                    break;
+            }
+        }
+        catch (FileNotFoundException ex)
+        {
+            Console.WriteLine($"Erreur : {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Une erreur inattendue s'est produite : {ex.Message}");
         }
     }
-    catch (FileNotFoundException ex)
+    /***********************************************************************************************************
+     * 
+     * 
+     * 
+     * 
+     *              Interaction avec Utilisateur  : Boucle Principale de l'application Console 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * **********************************************************************************************************/
+    bool run = true;
+    while (run)
     {
-        Console.WriteLine($"Erreur : {ex.Message}");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Une erreur inattendue s'est produite : {ex.Message}");
-    }
-}
-/***********************************************************************************************************
- * 
- * 
- * 
- * 
- *              Interaction avec Utilisateur  : Boucle Principale de l'application Console 
- * 
- * 
- * 
- * 
- * 
- * 
- * **********************************************************************************************************/
-Console.WriteLine("Pour affichier la liste des livres     ------------   : taper 1\n"+
-                  "Pour créer un nouveau Utilisateur      ------------   : taper 2\n"+
-                  "Pour affiher les donnees d'un Utilisateur  --------   : taper 3\n"+
-                  "Pour rendre/emprunter des livres pour un Utilisateur  : taper 4\n"+
-                  "Pour arreter l'application  -----------------------   : taper 5\n");
-bool run = true;
-while (run)
-{
-    string demandeUser = Console.ReadLine();
-    switch (demandeUser)
-    {
-        case "1":
-            /************************************************************************************
-             * 
-             * 
-             *                              Accés au livres disponibles 
-             * 
-             * 
-             * **********************************************************************************/
-            afficherLivresBibliothèques();
-            break;
-        case "2":
-            /************************************************************************************
-             * 
-             * 
-             *                              Creation Utilisateurs 
-             * 
-             * 
-             * **********************************************************************************/
-            Console.WriteLine("Insciption d'un Nouveau Utilisateur :) \n");
-            Console.WriteLine("Entrer le nom de l'utilisateur : ");
-            string nom = Console.ReadLine();
-            Console.WriteLine("Entrer le prenom de l'utilisateur : \n");
-            string prenom = Console.ReadLine();
-            Console.WriteLine("Entrer l'email de l'utilisateur : \n");
-            string email = Console.ReadLine();
-            Console.WriteLine("Entrer dateInscri de l'utilisateur : \n");
-            DateTime dateinscription = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
-            Console.WriteLine("Entrer le nom du livre a emprunté shouaité \n");
-            string nomLivre = Console.ReadLine();
-            Utilisateur newUtilisateur = new Utilisateur(nom, prenom, email, dateinscription, livres[chercherIndexLivre(nomLivre)]);
-            Utilisateurs.Add(newUtilisateur);
+        Console.WriteLine($"\n{Couleur.MAG}Pour affichier la liste des livres     ------------   : taper 1{Couleur.NOR}\n" +
+                          $"{Couleur.GRE}Pour créer un nouveau Utilisateur      ------------   : taper 2{Couleur.NOR}\n" +
+                          $"{Couleur.BLU}Pour affiher les donnees d'un Utilisateur  --------   : taper 3{Couleur.NOR}\n" +
+                          $"{Couleur.YEL}Pour rendre/emprunter des livres pour un Utilisateur  : taper 4{Couleur.NOR}\n" +
+                          $"{Couleur.RED}Pour arreter l'application  -----------------------   : taper 5{Couleur.NOR}\n");
+        string demandeUser = Console.ReadLine();
+        switch (demandeUser)
+        {
+            case "1":
+                /************************************************************************************
+                 * 
+                 * 
+                 *                              Accés au livres disponibles 
+                 * 
+                 * 
+                 * **********************************************************************************/
+                afficherLivresBibliothèques();
+                break;
+            case "2":
+                /************************************************************************************
+                 * 
+                 * 
+                 *                              Creation Utilisateurs 
+                 * 
+                 * 
+                 * **********************************************************************************/
+                Console.WriteLine($"{Couleur.GRE}Insciption d'un Nouveau Utilisateur :) {Couleur.NOR}\n");
+                Console.WriteLine("Entrer le nom de l'utilisateur : ");
+                string nom = Console.ReadLine();
+                Console.WriteLine("Entrer le prenom de l'utilisateur : \n");
+                string prenom = Console.ReadLine();
+                Console.WriteLine("Entrer l'email de l'utilisateur : \n");
+                string email = Console.ReadLine();
+                Console.WriteLine("Entrer dateInscri de l'utilisateur : \n");
+                DateTime dateinscription = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                Console.WriteLine("Entrer le nom du livre a emprunté shouaité \n");
+                string nomLivre = Console.ReadLine();
+                Utilisateur newUtilisateur = new Utilisateur(nom, prenom, email, dateinscription, livres[chercherIndexLivre(nomLivre)]);
+                Utilisateurs.Add(newUtilisateur);
 
-            /************************************************************************************
-             * 
-             * 
-             *                              Sérialization  
-             * 
-             * 
-             * **********************************************************************************/
-            Console.WriteLine("Sauvegarde Utilisateur : Choisisser type de sauvegarde de l'utilisateur : \n" +
-                              "0 --- Pour ---- Serialisation Binaire (.bjoson) \n" +
-                              "1 --- Pour ---- Serialisation XML (.xml) \n");
-            int typeserialistion = int.Parse(Console.ReadLine());
-            Console.WriteLine("Entrer un mdp de sauvegarde pour l'utilisateur : ");
-            string mdp=Console.ReadLine();
-            switch (typeserialistion)
-            {
-                case 0:
-                    SerializationFactory.sauvegarder(chemin, TypeSerialization.binaire, newUtilisateur, mdp);
-                    break;
-                case 1:
-                    SerializationFactory.sauvegarder(chemin, TypeSerialization.XML, newUtilisateur, mdp);
-                    break;
-                default:
-                    Console.WriteLine("typeSerialisation incorrect");
-                    break;
-            }
-            break;
-        case "3":
-            /************************************************************************************
-             * 
-             * 
-             *                              Désérialization 
-             * 
-             * 
-             * **********************************************************************************/
-            Console.WriteLine("Acces Utilisateur : Choisisser type d'acces de l'utilisateur : \n" +
-                                         "0 --- Pour ---- Serialisation Binaire (.bjoson) \n" +
-                                         "1 --- Pour ---- Serialisation XML (.xml) \n");
-            int typeserialistion2 = int.Parse(Console.ReadLine());
-            Console.WriteLine("Donner nom utilisateur");
-            string nom_des=Console.ReadLine();
-            Console.WriteLine("Donner prenom utilisateur");
-            string preonm_des = Console.ReadLine();
-            switch (typeserialistion2)
-            {
-                case 0:
-                    deserialiser(nom_des,preonm_des, TypeSerialization.binaire);
-                    break;
-                case 1:
-                    deserialiser(nom_des, preonm_des, TypeSerialization.XML);
-                    break;
-                default:
-                    Console.WriteLine("typeSerialisation incorrect");
-                    break;
-            }
-            break;
-        case "4":
-            /************************************************************************************
-             * 
-             * 
-             *                              Updating User 
-             * 
-             * 
-             * **********************************************************************************/
-            Console.WriteLine("Modification Utilisateur : Choisisser type d'acces de l'utilisateur : \n" +
-                                         "0 --- Pour ---- Serialisation Binaire (.bjoson) \n" +
-                                         "1 --- Pour ---- Serialisation XML (.xml) \n");
-            int typeserialistion3 = int.Parse(Console.ReadLine());
-            Console.WriteLine("Donner nom utilisateur");
-            string nom_des2 = Console.ReadLine();
-            Console.WriteLine("Donner prenom utilisateur");
-            string preonm_des2 = Console.ReadLine();
-            switch (typeserialistion3)
-            {
-                case 0:
-                    deserialiser_update(nom_des2, preonm_des2, TypeSerialization.binaire);
-                    break;
-                case 1:
-                    deserialiser_update(nom_des2, preonm_des2, TypeSerialization.XML);
-                    break;
-                default:
-                    Console.WriteLine("typeSerialisation incorrect");
-                    break;
-            }
-            break;
-        case "5":
-            /************************************************************************************
-             * 
-             * 
-             *                              Quitter l'application 
-             * 
-             * 
-             * **********************************************************************************/
-            Console.WriteLine("Toute l'équipe vous exprime sa gratitude pour l'utilisation de notre bibliothèque");
-            run = false;
-            break;
-        default:
-            break;
-    }
+                /************************************************************************************
+                 * 
+                 * 
+                 *                              Sérialization  
+                 * 
+                 * 
+                 * **********************************************************************************/
+                Console.WriteLine("Sauvegarde Utilisateur : Choisisser type de sauvegarde de l'utilisateur : \n" +
+                                  "0 --- Pour ---- Serialisation Binaire (.bjoson) \n" +
+                                  "1 --- Pour ---- Serialisation XML (.xml) \n");
+                int typeserialistion = int.Parse(Console.ReadLine());
+                Console.WriteLine($"{Couleur.YEL}Entrer un mdp de sauvegarde pour l'utilisateur : {Couleur.NOR}");
+                string mdp = Console.ReadLine();
+                switch (typeserialistion)
+                {
+                    case 0:
+                        SerializationFactory.sauvegarder(chemin, TypeSerialization.binaire, newUtilisateur, mdp);
+                        break;
+                    case 1:
+                        SerializationFactory.sauvegarder(chemin, TypeSerialization.XML, newUtilisateur, mdp);
+                        break;
+                    default:
+                        Console.WriteLine("typeSerialisation incorrect");
+                        break;
+                }
+                break;
+            case "3":
+                /************************************************************************************
+                * 
+                * 
+                *                              Désérialization 
+                * 
+                * 
+                * **********************************************************************************/
+                Console.WriteLine($"{Couleur.BLU}Acces Utilisateur : Choisisser type d'acces de l'utilisateur : \n" +
+                                             "0 --- Pour ---- Serialisation Binaire (.bjoson) \n" +
+                                             $"1 --- Pour ---- Serialisation XML (.xml){Couleur.NOR} \n");
+                int typeserialistion2 = int.Parse(Console.ReadLine());
+                Console.WriteLine("Donner nom utilisateur");
+                string nom_des = Console.ReadLine();
+                Console.WriteLine("Donner prenom utilisateur");
+                string preonm_des = Console.ReadLine();
+                switch (typeserialistion2)
+                {
+                    case 0:
+                        deserialiser(nom_des, preonm_des, TypeSerialization.binaire);
+                        break;
+                    case 1:
+                        deserialiser(nom_des, preonm_des, TypeSerialization.XML);
+                        break;
+                    default:
+                        Console.WriteLine("typeSerialisation incorrect");
+                        break;
+                }
+                break;
+            case "4":
+                /************************************************************************************
+                 * 
+                 * 
+                 *                              Updating User 
+                 * 
+                 * 
+                 * **********************************************************************************/
+                Console.WriteLine($"{Couleur.YEL}Modification Utilisateur : Choisisser type d'acces de l'utilisateur : \n" +
+                                             "0 --- Pour ---- Serialisation Binaire (.bjoson) \n" +
+                                             $"1 --- Pour ---- Serialisation XML (.xml) {Couleur.NOR}\n");
+                int typeserialistion3 = int.Parse(Console.ReadLine());
+                Console.WriteLine("Donner nom utilisateur");
+                string nom_des2 = Console.ReadLine();
+                Console.WriteLine("Donner prenom utilisateur");
+                string preonm_des2 = Console.ReadLine();
+                switch (typeserialistion3)
+                {
+                    case 0:
+                        Update(nom_des2, preonm_des2, TypeSerialization.binaire);
+                        break;
+                    case 1:
+                        Update(nom_des2, preonm_des2, TypeSerialization.XML);
+                        break;
+                    default:
+                        Console.WriteLine("typeSerialisation incorrect");
+                        break;
+                }
+                break;
+            case "5":
+                /************************************************************************************
+                 * 
+                 * 
+                 *                              Quitter l'application 
+                 * 
+                 * 
+                 * **********************************************************************************/
+                Console.WriteLine($"{Couleur.RED}Toute l'équipe vous exprime sa gratitude pour l'utilisation de notre bibliothèque{Couleur.NOR}\n");
+                run = false;
+                break;
+            default:
+                break;
+        }
 
-}
+    }
 

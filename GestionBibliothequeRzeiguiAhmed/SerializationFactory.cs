@@ -40,7 +40,7 @@ public class SerializationFactory
                 compressionStream.Write(jsonBytes, 0, jsonBytes.Length);
             }
 
-            Console.WriteLine($"Données sérialisées et compressées dans : {chemin}");
+            Console.WriteLine($"{Couleur.CYN}Données sérialisées et compressées dans : {chemin}{Couleur.NOR}");
         }
         else
         {
@@ -53,7 +53,7 @@ public class SerializationFactory
             }
 
 
-            Console.WriteLine($"Données sérialisées en XML dans : {chemin1}");
+            Console.WriteLine($"{Couleur.CYN}Données sérialisées en XML dans : {chemin1}{Couleur.NOR}");
 
             Console.WriteLine("Entrer un mot de passe pour protéger ce fichier XML :");
 
@@ -64,7 +64,7 @@ public class SerializationFactory
             string hashFilePath = Path.Combine(chemin, $"{obj.GetType().Name}_{obj.GetType().GetProperty("Nom").GetValue(obj)?.ToString()}_{obj.GetType().GetProperty("Prenom").GetValue(obj)?.ToString()}.hash"); ;
             File.WriteAllText(hashFilePath, passwordHash);
 
-            Console.WriteLine($"Mot de passe hashé et sauvegardé dans : {hashFilePath}");
+            Console.WriteLine($"{Couleur.BLU}Mot de passe hashé et sauvegardé dans : {hashFilePath}{Couleur.NOR}");
         }
     }
 
@@ -104,19 +104,19 @@ public class SerializationFactory
 
 
                         object obj = JsonSerializer.Deserialize(json, typeObjet);
-                        Console.WriteLine($"Données désérialisées depuis : {chemin}");
+                        Console.WriteLine($"{Couleur.GRE}Données désérialisées depuis : {chemin}{Couleur.NOR}");
                         return obj;
                     }
                     else
                     {
                         tentatives--;
-                        Console.WriteLine($"Mot de passe incorrect. Il vous reste {tentatives} tentatives.");
+                        Console.WriteLine($"{Couleur.RED}Mot de passe incorrect. Il vous reste {tentatives} tentatives.{Couleur.NOR}");
                     }
                 }
             }
             if (tentatives == 0)
             {
-                Console.WriteLine("3 tentatives échouées. Le fichier sera supprimé pour garantir la sécurité.");
+                Console.WriteLine($"{Couleur.RED}3 tentatives échouées. Le fichier sera supprimé pour garantir la sécurité.{Couleur.NOR}");
                 File.Delete(chemin);
                 throw new UnauthorizedAccessException("Accès refusé. Fichier supprimé.");
             }
@@ -165,21 +165,21 @@ public class SerializationFactory
                     using (FileStream fileStream = new FileStream(chemin, FileMode.Open))
                     {
                         object obj = serializer.Deserialize(fileStream);
-                        Console.WriteLine($"Données désérialisées depuis : {chemin}");
+                        Console.WriteLine($"{Couleur.GRE}Données désérialisées depuis : {chemin}{Couleur.NOR}");
                         return obj;
                     }
                 }
                 else
                 {
                     tentatives--;
-                    Console.WriteLine($"Mot de passe incorrect. Il vous reste {tentatives} tentative(s).");
+                    Console.WriteLine($"{Couleur.RED}Mot de passe incorrect. Il vous reste {tentatives} tentatives.{Couleur.NOR}");
                 }
             }
 
             // Si les tentatives sont épuisées, supprimer le fichier pour des raisons de sécurité
             if (tentatives == 0)
             {
-                Console.WriteLine("3 tentatives échouées. Le fichier sera supprimé pour garantir la sécurité.");
+                Console.WriteLine($"{Couleur.RED}3 tentatives échouées. Le fichier sera supprimé pour garantir la sécurité.{Couleur.NOR}");
                 File.Delete(chemin);
                 File.Delete(cheminHash); // Supprime également le fichier de hash
                 throw new UnauthorizedAccessException("Accès refusé. Fichier supprimé.");
@@ -222,20 +222,20 @@ public class SerializationFactory
 
                         if (hashMdp == hashFichier)
                         {
-                            Console.WriteLine("Mdp Correct");
                             a = true;
                             break;
                         }
                         else
                         {
                             tentatives--;
-                            Console.WriteLine($"Mot de passe incorrect. Il vous reste {tentatives} tentatives.");
+                            Console.WriteLine($"{Couleur.RED}Mot de passe incorrect. Il vous reste {tentatives} tentatives.{Couleur.NOR}");
+                            
                         }
                     }
 
                     if (tentatives == 0)
                     {
-                        Console.WriteLine("3 tentatives échouées. Le fichier sera supprimé pour garantir la sécurité.");
+                        Console.WriteLine($"{Couleur.RED}3 tentatives échouées. Le fichier sera supprimé pour garantir la sécurité.{Couleur.NOR}");
                         File.Delete(chemin);
                         throw new UnauthorizedAccessException("Accès refusé. Fichier supprimé.");
                     }
@@ -246,7 +246,6 @@ public class SerializationFactory
                     {
                         string cheminx = "C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\GestionBibliothequeRzeiguiAhmed\\Bibliotheque";
                         File.Delete(chemin);
-                        Console.WriteLine("Fichier existant supprimé.");
                         sauvegarder(cheminx, typeserialization, obj, mdp);
                     }
                     catch (Exception ex)
@@ -261,7 +260,6 @@ public class SerializationFactory
         }
         else
         {
-            Console.WriteLine("Hiiiiii");
             if (!File.Exists(chemin))
             {
                 throw new FileNotFoundException($"Fichier introuvable : {chemin}");
@@ -299,14 +297,19 @@ public class SerializationFactory
                 // Comparer le hash calculé avec celui du fichier
                 if (hashMdp == hashFichier)
                 {
-                    Console.WriteLine("MDP xml Correct !!");
                     a = true;
                     break;
                 }
                 else
                 {
                     tentatives--;
-                    Console.WriteLine($"Mot de passe incorrect. Il vous reste {tentatives} tentative(s).");
+                    Console.WriteLine($"{Couleur.RED}Mot de passe incorrect. Il vous reste {tentatives} tentatives.{Couleur.NOR}");
+                }
+                if (tentatives == 0)
+                {
+                    Console.WriteLine($"{Couleur.RED}3 tentatives échouées. Le fichier sera supprimé pour garantir la sécurité.{Couleur.NOR}");
+                    File.Delete(chemin);
+                    throw new UnauthorizedAccessException("Accès refusé. Fichier supprimé.");
                 }
             }
             if (a)
@@ -315,7 +318,6 @@ public class SerializationFactory
                 {
                     string cheminx = "C:\\Users\\Rzeigui Ahmed\\Documents\\CS\\Gestion-d-une-biblioth-que-en-C-avec-s-rialisation-et-cryptage\\GestionBibliothequeRzeiguiAhmed\\Bibliotheque";
                     File.Delete(chemin);
-                    Console.WriteLine("Fichier existant supprimé.");
                     sauvegarder(cheminx, typeserialization, obj, mdp);
                 }
                 catch (Exception ex)
